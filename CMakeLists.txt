@@ -3,4 +3,4 @@ project(CC4)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(CC4 main.cpp)
+add_executable(CC4 main.cpp Board.cpp Board.h C4Board.cpp C4Board.h)
