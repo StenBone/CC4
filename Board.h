@@ -8,20 +8,21 @@
 #include <cstddef>
 
 class Board {
-
-    int rows = 2, cols = 2;
-    const char EMPTY_CELL = '_';
-    char** board;
 public:
-    Board() : board(new char*[rows]) {
-        for(int i = 0; i < rows; ++i)
-            board[i] = new char[cols];
-
-
-        adr: -> adr: -> adr:char
-        * -> * -> char
-    };
+    Board();
     ~Board();
+
+    static const int BOARD_COLS = 7;
+    static const int BOARD_ROWS = 6;
+
+    void DrawBoard();
+    bool AddChip(const char playerSymbol, const int col);
+    bool isFull();
+
+private:
+    const char EMPTY_CELL = '_';
+    int chip_count = 0;
+    char board[BOARD_ROWS][BOARD_COLS] = {};
 };
 
 #endif //CC4_BOARD_H
