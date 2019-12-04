@@ -33,7 +33,7 @@ int main() {
     int player = 1;
     int move = -1;
     do {
-        c4_board->DrawBoard();
+        c4_board->drawBoard();
 
         cout << "Player 1, make your move. Col " << 1 << " - " << c4_board->BOARD_COLS << endl;
         cin >> move; //todo verify input is number
@@ -41,7 +41,7 @@ int main() {
         move--; // minus 1 to reveal index
 
         // todo react to when addChip is false
-        player == 1 ? c4_board->AddChip(PLAYER1_CHIP, move) : c4_board->AddChip(PLAYER2_CHIP, move);
+        player == 1 ? c4_board->addChip(PLAYER1_CHIP, move) : c4_board->addChip(PLAYER2_CHIP, move);
 
         player == 1 ? player = 2 : player = 1;
 

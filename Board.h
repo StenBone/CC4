@@ -15,9 +15,10 @@ public:
     static const int BOARD_COLS = 7;
     static const int BOARD_ROWS = 6;
 
-    void DrawBoard();
-    bool AddChip(const char playerSymbol, const int col);
+    void drawBoard();
+    bool addChip(const char playerSymbol, const int col);
     bool isFull();
+    bool isWinner(const char playerSymbol);
 
 private:
     const char EMPTY_CELL = '_';
