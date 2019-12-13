@@ -24,6 +24,11 @@ private:
     const char EMPTY_CELL = '_';
     int chip_count = 0;
     char board[BOARD_ROWS][BOARD_COLS] = {};
+
+    bool
+    FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int delta_direction_x,
+                unsigned int delta_direction_y,
+                const char line_symbol);
 };
 
 #endif //CC4_BOARD_H

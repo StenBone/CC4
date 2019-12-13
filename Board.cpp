@@ -62,6 +62,24 @@ bool Board::isFull() {
     return chip_count >= (BOARD_ROWS * BOARD_COLS);
 }
 
+bool Board::FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int delta_direction_x, unsigned int delta_direction_y, const char line_symbol)
+{
+    int chip_count = 0;
+
+    // for (init; continue condition; delta)
+    for (int x = start_x, y = start_y; (x >= 0 && x < BOARD_ROWS) && (y >= 0 && y < BOARD_COLS); x += delta_direction_x, y += delta_direction_y)
+    {
+        if (board[x][y] == line_symbol) {
+            chip_count++; //count chip
+
+            if (chip_count >= 4) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool Board::isWinner(const char playerSymbol) {
 
     //todo optimize idea: if there is less than 4 spaces to count and chipCount is 0 quit, couldn't win
@@ -231,6 +249,9 @@ bool Board::isWinner(const char playerSymbol) {
         }
         chipCount = 0;
     }
+
+    //todo what parts of this check can I put into functions to reduce it's size and make it less error prone,
+    // what is the minimum number of lines you can get this code down to using reusability
     //todo recursive solution that looks at next neighbor keeping chipCount and direction of next chip
     return false;
 }
