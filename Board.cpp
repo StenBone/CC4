@@ -62,6 +62,15 @@ bool Board::isFull() {
     return chip_count >= (BOARD_ROWS * BOARD_COLS);
 }
 
+/**
+ * Search for a line(sequence of 4 repeating items) @ start coord
+ * @param start_x
+ * @param start_y
+ * @param delta_direction_x
+ * @param delta_direction_y
+ * @param line_symbol
+ * @return true if line exist
+ */
 bool Board::FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int delta_direction_x, unsigned int delta_direction_y, const char line_symbol)
 {
     int chip_count = 0;
@@ -76,33 +85,31 @@ bool Board::FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int
                 return true;
             }
         }
+        else
+        {
+            chip_count = 0;
+        }
     }
     return false;
 }
 
-bool Board::isWinner(const char playerSymbol) {
+bool Board::isWinner(const char playerSymbol)
+{
 
-    //todo optimize idea: if there is less than 4 spaces to count and chipCount is 0 quit, couldn't win
+    // todo optimize idea: if there is less than 4 spaces to count and chipCount is 0 quit, couldn't win
 
     int chipCount = 0;
 
     //check horizontal -
     //check each row if there are 4 cols with the same symbol
-    for (int row = 0; row < BOARD_ROWS; row++) {
-        for (int col = 0; col < BOARD_COLS; ++col) {
-            if (board[row][col] == playerSymbol) {
-                chipCount++; //count chip
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-        }
 
-        if (chipCount >= 4) {
-            return true;
-        }
-        else {
-            chipCount = 0; //reset count for new row
+
+
+
+    for (int row = 0; row < BOARD_ROWS; row++) {
+        if (FoundLine2D(row, 0, 0, 1, playerSymbol))
+        {
+
         }
     }
 
