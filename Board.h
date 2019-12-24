@@ -26,9 +26,13 @@ private:
     char board[BOARD_ROWS][BOARD_COLS] = {};
 
     bool
-    FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int delta_direction_x,
-                unsigned int delta_direction_y,
+    FoundLine2D(unsigned int start_row, unsigned int start_col, unsigned int delta_direction_row,
+                unsigned int delta_direction_col,
                 const char line_symbol);
+
+    bool FoundLine2D(unsigned int start_row, unsigned int start_col, int delta_direction_row, int delta_direction_col,
+                     const char line_symbol);
+
 };
 
 #endif //CC4_BOARD_H

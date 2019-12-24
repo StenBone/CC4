@@ -21,7 +21,7 @@ void Board::drawBoard() {
     // todo print numbers of cols
     // Print top to bottom, so print the last row with the last index in the array first
     for (int row = BOARD_ROWS - 1; row >= 0; row--) {
-        std::cout << row;
+        std::cout << row << " ";
         for (int col = 0; col < BOARD_COLS; col++) {
             std::cout << (char) board[row][col] << " ";
         }
@@ -32,7 +32,7 @@ void Board::drawBoard() {
 /**
  * Adds Chip to board
  * @param playerSymbol
- * @param col
+ * @param col 0 to BOARD_COLS - 1
  * @return is move valid?
  */
 bool Board::addChip(const char playerSymbol, const int col) {
@@ -64,21 +64,22 @@ bool Board::isFull() {
 
 /**
  * Search for a line(sequence of 4 repeating items) @ start coord
- * @param start_x
- * @param start_y
- * @param delta_direction_x
- * @param delta_direction_y
+ * Notes: Rows ^/v up/down, Cols <-> left-right
+ * @param start_row
+ * @param start_col
+ * @param delta_direction_row
+ * @param delta_direction_col
  * @param line_symbol
  * @return true if line exist
  */
-bool Board::FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int delta_direction_x, unsigned int delta_direction_y, const char line_symbol)
+bool Board::FoundLine2D(unsigned int start_row, unsigned int start_col, int delta_direction_row, int delta_direction_col, const char line_symbol)
 {
     int chip_count = 0;
 
     // for (init; continue condition; delta)
-    for (int x = start_x, y = start_y; (x >= 0 && x < BOARD_ROWS) && (y >= 0 && y < BOARD_COLS); x += delta_direction_x, y += delta_direction_y)
+    for (int row = start_row, col = start_col; (row >= 0 && row < BOARD_ROWS) && (col >= 0 && col < BOARD_COLS); row += delta_direction_row, col += delta_direction_col)
     {
-        if (board[x][y] == line_symbol) {
+        if (board[row][col] == line_symbol) {
             chip_count++; //count chip
 
             if (chip_count >= 4) {
@@ -95,170 +96,62 @@ bool Board::FoundLine2D(unsigned int start_x, unsigned int start_y, unsigned int
 
 bool Board::isWinner(const char playerSymbol)
 {
-
     // todo optimize idea: if there is less than 4 spaces to count and chipCount is 0 quit, couldn't win
 
-    int chipCount = 0;
-
-    //check horizontal -
-    //check each row if there are 4 cols with the same symbol
-
-
-
-
+    // check horizontal -
+    // check each row if there are 4 cols with the same symbol
     for (int row = 0; row < BOARD_ROWS; row++) {
         if (FoundLine2D(row, 0, 0, 1, playerSymbol))
         {
-
+            return true;
         }
     }
 
-    //check vertical |
-    //check each column  for 4 chips of the same symbol
-    chipCount = 0; //reset count
+    // check vertical |
+    // check each column  for 4 chips of the same symbol
     for (int col = 0; col < BOARD_COLS; col++) {
-        for (int row = 0; row < BOARD_ROWS; ++row) {
-            if (board[row][col] == playerSymbol) {
-                chipCount++; //count chip
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-        }
-
-        if (chipCount >= 4) {
+        if (FoundLine2D(0, col, 1, 0, playerSymbol))
+        {
             return true;
         }
-        else {
-            chipCount = 0; //reset count for new row
-        }
     }
 
-    //todo check diagonal /
-    //center line, can only be as many checks as the smallest dimension
-    chipCount = 0;
-    int diagonal_length = 0;
-    BOARD_ROWS < BOARD_COLS ? diagonal_length = BOARD_ROWS : diagonal_length = BOARD_COLS;
-    for (int row_col = 0; row_col < diagonal_length; row_col++) {
-        if (board[row_col][row_col] == playerSymbol) {
-            chipCount++; //count chip
-        }
-        else {
-            chipCount = 0; //reset count
-        }
-    }
-
-    if (chipCount >= 4) {
-        return true;
-    }
-    else {
-        chipCount = 0; //reset count for new row
-    }
-
-    // All Coords where row is 0
-    for (int col = 1; col < BOARD_COLS; ++col) {
-
-        //finding the smallest dimension. cols move to the right.
-        diagonal_length = 0;
-        int cols_remaining = BOARD_COLS - col;
-        BOARD_ROWS < cols_remaining ? diagonal_length = BOARD_ROWS : diagonal_length = cols_remaining;
-
-        //start @ board[0][col]
-        int r = 0;
-        for (int c = col; c < diagonal_length; c++) {
-            if (board[r][c] == playerSymbol) {
-                chipCount++; //count chip
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-            r++;
-        }
-
-        if (chipCount >= 4) {
+    // todo check diagonal / ^>
+    // start along the side where col is 0
+    for (int row = 0; row < BOARD_ROWS; row++) {
+        if (FoundLine2D(row, 0, 1, 1, playerSymbol))
+        {
             return true;
         }
-        else {
-            chipCount = 0; //reset count for new row
-        }
     }
-
-    // All Coords where col is 0
-    //research prefix and postfix at end of for loop. does it change anything? answer: no, doesn't change anything
-    for (int row = 1; row < BOARD_ROWS; row++) {
-
-        //finding the smallest dimension. cols move to the right.
-        diagonal_length = 0;
-        int rows_remaining = BOARD_ROWS - row;
-        BOARD_ROWS < rows_remaining ? diagonal_length = BOARD_ROWS : diagonal_length = rows_remaining;
-
-        //start @ board[row][0]
-        int c = 0;
-        //research if int row = row and row has an outer scope, what happens? Answer: sets it 0. Default initializer
-        for (int r = row; r < diagonal_length; r++) {
-            if (board[r][c] == playerSymbol) {
-                chipCount++; //count chip
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-            c++;
-        }
-
-        if (chipCount >= 4) {
+    // start along bottom where row is 0
+    // can skip one since it was already looked at
+    for (int col = 1; col < BOARD_COLS; col++)
+    {
+        if (FoundLine2D(0, col, 1, 1, playerSymbol)) {
             return true;
         }
-        else {
-            chipCount = 0; //reset count for new row
+    }
+
+    // todo check diagonal \ ^<
+    // start along the side where col is 0
+    for (int row = 0; row < BOARD_ROWS; row++) {
+        if (FoundLine2D(row, 0, 1, -1, playerSymbol))
+        {
+            return true;
+        }
+    }
+    // start along bottom where row is 0
+    // can skip one since it was already looked at
+    for (int col = BOARD_COLS - 1; col >= 0; col--)
+    {
+        if (FoundLine2D(0, col, 1, -1, playerSymbol)) {
+            return true;
         }
     }
 
-
-
-    //check diagonal \
-    //go up(row++) from bottom row and to the left(col--) from the right
-    chipCount = 0;
-    diagonal_length = 0;
-    BOARD_ROWS < BOARD_COLS ? diagonal_length = BOARD_ROWS : diagonal_length = BOARD_COLS;
-
-    // start at row 0 furthest left column, row++ col--
-    // Go along the rows with new row_start positions
-    // start at 4 because can't have a match less than a 4
-    for (int row_start = 0; row_start < BOARD_ROWS - 4; row_start++) {
-        for (int row = row_start, col = BOARD_COLS - 1; row < BOARD_ROWS && col >= 0; row ++, col--) {
-            if (board[row][col] == playerSymbol) {
-                chipCount++; //count chip
-
-                if (chipCount >= 4) {
-                    return true;
-                }
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-        }
-        chipCount = 0;
-    }
-
-    // Go along the bottom row with new col start positions
-    for (int col_start = 4; col_start < BOARD_COLS; col_start++) {
-        for (int row = 0, col = col_start; row < BOARD_ROWS && col >= 0; row ++, col--) {
-            if (board[row][col] == playerSymbol) {
-                chipCount++; //count chip
-
-                if (chipCount >= 4) {
-                    return true;
-                }
-            }
-            else {
-                chipCount = 0; //reset count
-            }
-        }
-        chipCount = 0;
-    }
-
-    //todo what parts of this check can I put into functions to reduce it's size and make it less error prone,
+    // todo what parts of this check can I put into functions to reduce it's size and make it less error prone,
     // what is the minimum number of lines you can get this code down to using reusability
-    //todo recursive solution that looks at next neighbor keeping chipCount and direction of next chip
+    // todo recursive solution that looks at next neighbor keeping chipCount and direction of next chip
     return false;
 }
